@@ -29,7 +29,7 @@ async function createGuestDummyData() {
         })
         .join("\n");
 
-    fs.writeFileSync("guest.csv", csvContent);
+    fs.writeFileSync("./database/guest.csv", csvContent);
 }
 
 function createCsv() {
