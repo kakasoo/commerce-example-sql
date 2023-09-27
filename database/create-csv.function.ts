@@ -2,7 +2,7 @@ import { uuid } from "uuidv4";
 import { fakerEN_GB } from "@faker-js/faker";
 import * as fs from "fs";
 
-function createCsv() {
+async function createGuestDummyData() {
     const NUMBER_OF_ROWS = 10000;
 
     const csvContent = new Array(NUMBER_OF_ROWS)
@@ -29,7 +29,11 @@ function createCsv() {
         })
         .join("\n");
 
-    fs.writeFileSync("initial.csv", csvContent);
+    fs.writeFileSync("guest.csv", csvContent);
+}
+
+function createCsv() {
+    createGuestDummyData().then(() => {});
 }
 
 createCsv();
