@@ -2,12 +2,25 @@ import { uuid } from "uuidv4";
 import { faker } from "@faker-js/faker";
 import * as fs from "fs";
 
+const formatDateForMySQL = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+
+  // MySQL DATETIME 형식으로 조합한다.
+  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return formattedDate;
+};
+
 const generateRandomNumber = (min: number, max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 const generateRandomDate = (min: Date | string, max: Date | string): string => {
-  return faker.date.between({ from: min, to: max }).toISOString();
+  return formatDateForMySQL(faker.date.between({ from: min, to: max }));
 };
 
 async function init() {
@@ -15,10 +28,16 @@ async function init() {
   const to = new Date("2022-12-31");
   const NUMBER_OF_ROWS = generateRandomNumber(1000, 2000);
 
-  const guestCsvContents: any[] = [];
+  const guestColumns = "id,user_id,created_at";
+  const userColumns = "id,email,username,password_hash,created_at,updated_at";
+  const guestCsvContents: string[] = [guestColumns];
   const userCsvContents = new Array(NUMBER_OF_ROWS)
     .fill(0)
     .map((_, line) => {
+      if (line === 0) {
+        return userColumns;
+      }
+
       const userId = uuid();
       const email = faker.internet.email();
       const username = faker.person.fullName();
@@ -41,26 +60,23 @@ async function init() {
              * 단, 로그인할 때마다 게스트에서 유저의 uuid를 찾아 넣어주기 때문에 결국은 전부 찾아낼 수 있다.
              */
             const createdAt = generateRandomDate(from, userCreatedAt);
-            return [guestId, userId, createdAt].join(",");
+            // return [guestId, userId, createdAt].join(",");
+            return `"${guestId}","${userId}","${createdAt}"`;
           });
 
         guestCsvContents.push(...temp);
       }
 
-      return [
-        userId,
-        email,
-        username,
-        password_hash,
-        userCreatedAt,
-        userUpdatedAt,
-        null,
-      ].join(",");
+      return `"${userId}","${email}","${username}","${password_hash}","${userCreatedAt}","${userUpdatedAt}"`;
     })
     .join("\n");
 
-  fs.writeFileSync("./database/user.csv", userCsvContents);
-  fs.writeFileSync("./database/guest.csv", guestCsvContents.join("\n"));
+  fs.writeFileSync("./database/user.csv", userCsvContents, "utf-8");
+  fs.writeFileSync(
+    "./database/guest.csv",
+    guestCsvContents.join("\n"),
+    "utf-8"
+  );
 }
 
 init();
