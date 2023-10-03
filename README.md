@@ -29,7 +29,6 @@ docker exec -it real-mysql-study bash
 mysql -u root -p
 >Enter password : # 아무 입력없이 엔터
 
-
 ```
 
 1. `datetime`과 `timestamp`의 차이는?

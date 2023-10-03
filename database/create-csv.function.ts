@@ -1,5 +1,5 @@
 import { uuid } from "uuidv4";
-import { fa, faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker";
 import * as fs from "fs";
 
 const generateRandomNumber = (min: number, max: number): number => {
