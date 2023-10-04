@@ -41,6 +41,8 @@ source /var/lib/dummy/init.sql
 docker compose down --rmi all
 ```
 
+# 문제 (23.10.04)
+
 1. `datetime`과 `timestamp`의 차이는?
 
    - `createdAt`, `updatedAt`, `deletedAt`의 의미는?
