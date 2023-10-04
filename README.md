@@ -27,8 +27,18 @@ docker exec -it real-mysql-study bash
 
 # mysql 접속
 mysql -u root -p
->Enter password : # 아무 입력없이 엔터
+>Enter password : # 'password'가 password이므로 그대로 칠 것
 
+# 더미 데이터 생성
+source /var/lib/dummy/init.sql
+
+```
+
+# 도커 생성 간 에러 발생 시
+
+```bash
+# 도커 이미지가 잘못 빌드된 경우로 인한 에러
+docker compose down --rmi all
 ```
 
 1. `datetime`과 `timestamp`의 차이는?
@@ -59,6 +69,8 @@ mysql -u root -p
 
    	-- 아래와 같이 작성할 경우 너무 많기 때문에 과부하가 걸린다. --
    -- SELECT COUNT(*) FROM USER AS U WHERE (SELECT COUNT(*) FROM GUEST AS G WHERE G.user_id = U.id) = 1;--
+
+    SELECT G.user_id, COUNT(*) FROM GUEST AS G GROUP BY G.user_id HAVING COUNT(*) = 1;
    ```
 
    - 3. 1번 방문한 유저를 포함하여, 한 유저가 가입하기까지 평균적으로 몇 회 이상 방문했는지를 구하라.
