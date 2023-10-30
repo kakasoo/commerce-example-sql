@@ -1,6 +1,6 @@
 # commerce-example-sql
 
-create e-commerce tables and dummy data for MySQL
+create e-commerce tables and dummy data for MySQL!
 
 # 설치와 설정
 
